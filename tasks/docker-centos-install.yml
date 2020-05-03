@@ -34,7 +34,7 @@
     - add-docker-user
   register: apt_status
   until: apt_status.failed == False
-  retries: 5
+  retries: 10
   delay: 60
   when: docker_output.stdout == ''
 
