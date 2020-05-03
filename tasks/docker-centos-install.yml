@@ -3,8 +3,8 @@
   shell: rpm -qa | grep -i 'docker-ce'
   args:
     executable: /bin/bash
+    warn: false
   register: docker_output
-  warn: false
   failed_when: docker_output.stderr != ""
 
 # install yum utils package
