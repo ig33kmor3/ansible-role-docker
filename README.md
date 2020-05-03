@@ -1,7 +1,7 @@
 # ansible-role-docker
 
 ## Requirements
-- Ubuntu 18.04
+- Ubuntu 18.04 LTS
 - CentOS 8 / RHEL 8
 
 ## Installation
