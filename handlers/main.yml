@@ -1,0 +1,21 @@
+---
+# add user to manage docker
+- name: add-docker-user
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
+
+# restart docker
+- name: restart-docker
+  systemd:
+    name: docker
+    state: restarted
+    daemon_reload: yes
+
+# enable docker systemd
+- name: enable-docker
+  systemd:
+    name: docker
+    enabled: yes
+    masked: no

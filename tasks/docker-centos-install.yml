@@ -1,0 +1,56 @@
+# check if docker is installed before proceeding
+- name: check if docker is already installed
+  shell: rpm -qa | grep -i 'docker-ce'
+  args:
+    executable: /bin/bash
+  register: docker_output
+  failed_when: docker_output.stderr != ""
+
+# install yum utils package
+- name: install the latest version of yum-utils
+  yum:
+    name: yum-utils
+    state: present
+  when: docker_output.stdout == ''
+
+# add docker repo
+- name: adding docker repo to CentOS / Red Hat
+  yum_repository:
+    name: docker
+    description: docker repo for docker-ce
+    baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+  when: docker_output.stdout == ''
+
+# install docker on host
+- name: install docker on host
+  yum:
+    name: 
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+    state: present
+  notify:
+    - add-docker-user
+  when: docker_output.stdout == ''
+
+# configure docker for kubernetes deployment
+- name: configure docker for cgroup for systemd
+  shell: 
+    cmd: |
+      cat > /etc/docker/daemon.json <<EOF
+      {
+        "exec-opts": ["native.cgroupdriver=systemd"],
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "100m"
+        },
+        "storage-driver": "overlay2"
+      }
+      EOF
+      mkdir -p /etc/systemd/system/docker.service.d
+  args:
+    executable: /bin/bash
+  notify:
+    - enable-docker
+    - restart-docker
+  when: docker_output.stdout == ''
