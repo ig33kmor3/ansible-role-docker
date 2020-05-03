@@ -19,6 +19,10 @@
       - software-properties-common
     state: present
     update_cache: yes
+  register: apt_status
+  until: apt_status.failed == False
+  retries: 10
+  delay: 60
   when: docker_output.stdout == ''
 
 # add docker gpg key to talk to repo
@@ -49,6 +53,10 @@
       - containerd.io
     state: present
     update_cache: yes
+  register: apt_status
+  until: apt_status.failed == False
+  retries: 10
+  delay: 60
   notify:
     - add-docker-user
   when: docker_output.stdout == ''
