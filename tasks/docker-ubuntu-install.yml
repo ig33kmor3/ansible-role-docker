@@ -5,6 +5,7 @@
     executable: /bin/bash
     warn: false
   register: docker_output
+  changed_when: docker_output.stdout != ""
   failed_when: docker_output.stderr != ""
 
 # install required repo packages
