@@ -4,6 +4,7 @@
   args:
     executable: /bin/bash
   register: docker_output
+  warn: false
   failed_when: docker_output.stderr != ""
 
 # install required repo packages
